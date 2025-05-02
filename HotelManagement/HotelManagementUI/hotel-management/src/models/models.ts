@@ -33,6 +33,7 @@ export interface RoomSelection{
     stayingDateTo:Date;
     price:number;
     numberOfDays:number;
+    bookingStatus:string;
 }
 export interface WishList{
     wishListID:number;

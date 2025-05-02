@@ -114,14 +114,14 @@ export function renderRooms(container: HTMLElement) {
             };
             await APICALLS.editRoomDetail(room);
             imagestring="";
-            alert("Updated medicine successfully : " + room.roomID);
+            alert("Updated room successfully : " + room.roomID);
         } else {
             const room: RoomDetails = {
                 roomID: 0, roomType: form.medicineName.value, pricePerDay: parseInt(form.medicineCount.value), numberOfBeds: parseInt(form.medicinePrice.value),roomImage: imagestring
             };
             await APICALLS.addNewRoom(room);
             imagestring="";
-            alert("Added medicine successfully : " + room.roomID);
+            alert("Added room successfully : " + room.roomID);
         }
         createTable();
         form.reset();

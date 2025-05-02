@@ -16,7 +16,7 @@ export async function renderWallet(container: HTMLElement) {
     <h2>Your balance is: $<span id="balance">${currentUser.amount}</span></h2><br><br>
     <h1>Recharge your wallet</h1>
     <span>
-      <input id="deposit" type="number" placeholder="Enter the Amount" id="amount" required>
+      <input id="amount" type="number" placeholder="Enter the Amount" id="amount" required>
       <button id="deposit">Deposit</button>
     </span><br><br>
     </div>

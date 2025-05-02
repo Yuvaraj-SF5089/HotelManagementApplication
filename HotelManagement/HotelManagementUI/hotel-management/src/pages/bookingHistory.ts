@@ -1,4 +1,4 @@
-import { bookingStatus } from '../models/models';
+import { bookingStatus, RoomSelection } from '../models/models';
 import * as APICALLS from '../api/apicalls';
 
 export async function renderBookingHistory(container: HTMLElement) {
@@ -39,7 +39,9 @@ export async function renderBookingHistory(container: HTMLElement) {
         var row = document.createElement("tr") as HTMLTableRowElement;
         row.innerHTML = `<td>${order.bookingID}</td> <td>${order.userID}</td> <td>${order.totalPrice}</td><td>${order.status}</td> 
               <td>${new Date(order.dateOfBooking).toLocaleDateString()}</td>
-              <td><button onclick="cancelOrder(${order.bookingID})">Cancel</button></td>`;
+              <td>
+              <button onclick="ShowBookDetails(${order.bookingID})" id="show">Show Details</button>
+              <button onclick="cancelOrder(${order.bookingID})">Cancel</button></td>`;
         table.appendChild(row);
       }
     })
@@ -67,5 +69,69 @@ export async function renderBookingHistory(container: HTMLElement) {
     alert("Order cancelled successfully");
     createTable();
   }
+  async function ShowBookDetails(bookingID : number){
+    const overlayer=document.createElement("div");
+    overlayer.id="over";
+    container.appendChild(overlayer);
+    const over=(document.getElementById("over") as HTMLDivElement);
+    var rooms:RoomSelection[]=await APICALLS.GetBookedRooms(bookingID);
+    if(rooms.length==0)
+    {
+      alert("No Rooms booked yet !");
+      return;
+    }
+    over.style.display="block";
+    var roomdiv=document.createElement("div");
+    roomdiv.className="selectedRoom";
+    roomdiv.id="sel";
+    var btn=document.createElement("div");
+    btn.className="btn";
+    btn.innerHTML=`
+    <span>Booked Rooms</span>
+    <button onclick="overlays()">Back</button>`;
+    roomdiv.appendChild(btn);
+    var table=document.createElement("table") as HTMLTableElement;
+    table.border = "1";
+    table.style.borderCollapse = "collapse";
+    table.style.width = "100%";
+    var headerrow=document.createElement("tr");
+    headerrow.innerHTML=`
+    <th>Room Selection ID</th>
+    <th>Booking ID</th>
+    <th>Room ID</th>
+    <th>Wishlist ID</th>
+    <th>From Date</th>
+    <th>To Date</th>
+    <th>Number of Days</th>
+    <th>Price</th>
+    <th>Booking Status</th>
+    `;
+    table.appendChild(headerrow);
+    rooms.forEach((room) =>{
+      var row=document.createElement("tr");
+      row.innerHTML=`
+      <td>${room.selectionID}</td>
+      <td>${room.bookingID}</td>
+      <td>${room.roomID}</td>
+      <td>${room.wishListID}</td>
+      <td>${new Date(room.stayingDateFrom).toLocaleDateString()}</td>
+      <td>${new Date(room.stayingDateTo).toLocaleDateString()}</td>
+      <td>${room.numberOfDays}</td>
+      <td>${room.price}</td>
+      <td>${room.bookingStatus}</td>
+      `;
+      table.appendChild(row);
+    })
+    roomdiv.appendChild(table);
+    container.appendChild(roomdiv);
+  }
+  function overlays(){
+    const tableview=document.getElementById("sel") as HTMLDivElement;
+    const overlayel=document.getElementById("over") as HTMLDivElement;
+    overlayel.style.display='none';
+    container.removeChild(tableview);
+  }
+  (window as any).overlays=overlays;
   (window as any).cancelOrder = cancelOrder;
+  (window as any).ShowBookDetails=ShowBookDetails;
 }

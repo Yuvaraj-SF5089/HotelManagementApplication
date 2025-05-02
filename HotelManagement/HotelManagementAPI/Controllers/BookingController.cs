@@ -53,8 +53,24 @@ namespace HotelManagementAPI.Controllers
             user.Amount += booking.TotalPrice;
             booking.Status = ApplicationDBContext.bookingStatus[1];
             _dbContext.SaveChanges();
+            var roomSelections=_dbContext.roomSelections.ToList();
+            roomSelections.ForEach(room=>{
+                room.BookingStatus=ApplicationDBContext.bookingStatus[1];
+            });
+            _dbContext.SaveChanges();
             return Ok(booking.BookingID);
 
+        }
+        [HttpGet("bookedrooms/{bookingID}")]
+        public IActionResult GetBookedRooms(int bookingID)
+        {
+            // var booking = _dbContext.bookings.Find(bookingID);
+            // if (booking == null)
+            // {
+            //     return BadRequest("Booking not found");
+            // }
+            var rooms=_dbContext.roomSelections.Where(x=>x.BookingID==bookingID).ToList();
+            return Ok(rooms);
         }
 
     }
