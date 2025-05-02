@@ -1,4 +1,4 @@
-import { BookingDetails, RoomDetails, User, WishList } from "../models/models";
+import { BookingDetails, RoomDetails, RoomSelection, User, WishList } from "../models/models";
 let url = "http://localhost:5019/api/hotelmanagement";
 
 export async function checkUser(email: string): Promise<boolean> {
@@ -245,4 +245,12 @@ export async function bookAllRooms(userID:number):Promise<string> {
     }
     return response.text();
     
+}
+export async function GetBookedRooms(bookingID:number):Promise<Array<RoomSelection>> {
+    const response=await fetch(`${url}/bookingcontroller/bookedrooms/${bookingID}`);
+    if(!response.ok)
+    {
+        throw new Error('Failed to get rooms');
+    }
+    return await response.json();
 }

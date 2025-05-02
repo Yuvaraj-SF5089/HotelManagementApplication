@@ -92,6 +92,11 @@ export async function renderWishList(container: HTMLElement) {
       alert("Room in Wishlist ID : "+response.replace('w','')+ "not available! Failed to Book Rooms");
       return;
     }
+    if(response=="failed")
+    {
+      alert("Room not available. Booking Failed");
+      return;
+    }
     alert("Rooms Booked Successfully. Booking ID: "+response);
   }
   async function bookRoom(wishListID:number,userID:number) {
@@ -113,6 +118,7 @@ export async function renderWishList(container: HTMLElement) {
     }
     alert("Booking successfully done. Booking ID: "+response);
     await APICALLS.deleteWishList(wishListID);
+    createTable();
   }
   (window as any).removeItem = removeItem;
   (window as any).bookRoom=bookRoom;
